@@ -1,6 +1,6 @@
 export function cleanInput(input: string): string[] {
     
 
-    const words = input.toLowerCase().split(" ")
+    const words = input.trim().toLowerCase().split(" ")
     return words;
 }
