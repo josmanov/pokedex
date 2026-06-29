@@ -15,7 +15,7 @@ export function startREPL(stateObject: State) {
     stateObject.readlineInterface.prompt()
 
     // Loop reading input and detecting commands
-    stateObject.readlineInterface.on("line", (input) => {
+    stateObject.readlineInterface.on("line", async (input) => {
         try {
             let result = cleanInput(input);
             
@@ -30,7 +30,7 @@ export function startREPL(stateObject: State) {
                 stateObject.readlineInterface.prompt();
                 return
             }
-            cmd.callback(stateObject);
+            await cmd.callback(stateObject);
             stateObject.readlineInterface.prompt();
 
         } catch (error) {
