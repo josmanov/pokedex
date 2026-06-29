@@ -1,17 +1,16 @@
 import { createInterface } from "readline";
+
+import { CLICommand } from "./command.js"
+
 import { commandExit } from "./command_exit.js";
+import { commandHelp } from "./command_help.js";
+
 
 const rl = createInterface({
     input: process.stdin,
     output: process.stdout,
     prompt: "Pokedex > "
 });
-
-export type CLICommand = {
-    name: string;
-    description: string;
-    callback: (commands: Record<string, CLICommand>) => void;
-};
 
 export function cleanInput(input: string): string[] {
 
@@ -26,27 +25,44 @@ export function getCommands(): Record<string, CLICommand> {
             description: "Exists the pokedex",
             callback: commandExit,
         },
+        help: {
+            name: "help",
+            description: "Describes how to use the REPL",
+            callback: commandHelp,
+        }
     }
 }
 
 export function startREPL() {
-    const commands = getCommands();
-    console.log(commands)
-    
+
+    // Get the commands
+    const commands = getCommands();  
+
+    // Prefix prompt
     rl.prompt()
+
+    // Loop reading input and detecting commands
     rl.on("line", (input) => {
-        let result = cleanInput(input);
-
-        // console.log(result)
-        const cmd = commands[input];
-        console.log(`cmd: ${cmd}`);
-        
-
-        // Does it make sense to use result[0] to check empty input?
-        if (result[0] === "") {
+        try {
+            let result = cleanInput(input);
+            
+            if (result[0] === "") {
+                rl.prompt();
+                return;
+            }
+            const cmd = commands[result[0]];
+            
+            if (cmd === undefined) {
+                console.log(`Unknown command`);
+                rl.prompt();
+                return
+            }
+            cmd.callback(commands);
             rl.prompt();
-            return;
+
+        } catch (error) {
+            console.error(error);
+            rl.prompt();
         }
-        rl.prompt();
     });
 };
