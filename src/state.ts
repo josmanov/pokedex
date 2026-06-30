@@ -5,6 +5,7 @@ import { PokeAPI } from "./pokeapi.js"
 import { commandExit } from "./command_exit.js";
 import { commandHelp } from "./command_help.js";
 import { commandMap } from "./command_map.js";
+import { commandMapb } from "./command_mapb.js";
 
 
 export type State = {
@@ -31,6 +32,11 @@ export function getCommands(): Record<string, CLICommand> {
             name: "map",
             description: "Displays pokemon locations",
             callback: commandMap,
+        },
+        mapb: {
+            name: "mapb",
+            description: "Displays previous pokemon locations",
+            callback: commandMapb,
         }
     }
 }
