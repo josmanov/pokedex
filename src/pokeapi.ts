@@ -40,12 +40,15 @@ export class PokeAPI {
       }
 
       const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
 
       const location = (await response.json()) as Location;
       this.#cache.add(url, location);
       return location;
+
     } catch(error) {
-      console.error(error);
       throw error
     }
     }
