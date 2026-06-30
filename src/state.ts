@@ -6,6 +6,7 @@ import { commandExit } from "./command_exit.js";
 import { commandHelp } from "./command_help.js";
 import { commandMap } from "./command_map.js";
 import { commandMapb } from "./command_mapb.js";
+import { commandExplore } from "./command_explore.js";
 
 
 export type State = {
@@ -37,6 +38,11 @@ export function getCommands(): Record<string, CLICommand> {
             name: "mapb",
             description: "Displays previous pokemon locations",
             callback: commandMapb,
+        },
+        explore: {
+            name: "explore",
+            description: "Displays pokemons from a location",
+            callback: commandExplore,
         }
     }
 }
@@ -44,7 +50,7 @@ export function getCommands(): Record<string, CLICommand> {
 export type CLICommand = {
     name: string;
     description: string;
-    callback: (state: State) => Promise<void>;
+    callback: (state: State, ...args: string[]) => Promise<void>;
 };
 
 export function initState(): State {

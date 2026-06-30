@@ -30,7 +30,7 @@ export function startREPL(stateObject: State) {
                 stateObject.readlineInterface.prompt();
                 return
             }
-            await cmd.callback(stateObject);
+            await cmd.callback(stateObject, ...result.slice(1));
             stateObject.readlineInterface.prompt();
 
         } catch (error) {

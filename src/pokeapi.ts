@@ -10,24 +10,45 @@ export class PokeAPI {
 
   async fetchLocations(pageURL?: string): Promise<ShallowLocations> {
 
-    const url = pageURL ?? PokeAPI.baseURL + "/location-area"; 
-    
-    const cachedLocations = this.#cache.get<ShallowLocations>(url);
-    if (cachedLocations !== undefined) {
-      return cachedLocations;
+    try {
+      const url = pageURL ?? PokeAPI.baseURL + "/location-area"; 
+      
+      const cachedLocation = this.#cache.get<ShallowLocations>(url);
+      if (cachedLocation !== undefined) {
+        return cachedLocation;
+      }
+
+      const response = await fetch(url);
+
+      const locations = (await response.json()) as ShallowLocations;
+      this.#cache.add(url, locations);
+      return locations;
+    } catch(error) {
+      console.log(error);
+      throw error;
     }
 
-    const response = await fetch(url);
-
-    const locations = (await response.json()) as ShallowLocations;
-    this.#cache.add(url, locations);
-    return locations;
   }
 
   async fetchLocation(locationName: string): Promise<Location> {
-    // implement this
-    return {}
-  }
+    try {
+      const url = PokeAPI.baseURL + "/location-area/" + locationName; 
+      
+      const cachedLocation = this.#cache.get<Location>(url);
+      if (cachedLocation !== undefined) {
+        return cachedLocation;
+      }
+
+      const response = await fetch(url);
+
+      const location = (await response.json()) as Location;
+      this.#cache.add(url, location);
+      return location;
+    } catch(error) {
+      console.error(error);
+      throw error
+    }
+    }
 }
 
 export type ShallowLocations = {
@@ -40,5 +61,10 @@ export type ShallowLocations = {
 };
 
 export type Location = {
-  // add properties here
-};
+  pokemon_encounters: {
+    pokemon: {
+      name: string;
+      url: string;
+    };
+  }[]
+}
